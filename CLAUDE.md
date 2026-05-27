@@ -90,6 +90,19 @@ docker compose up --build
 Удалить файл `./data/pharmacy.sqlite*` и перезапустить контейнер —
 демо-данные засеются заново.
 
+### Ошибка `unable to open database file` (права на ./data)
+SQLite требует право записи на КАТАЛОГ (для WAL/journal), не только на файл.
+При bind-mount `./data:/var/www/data` права хостовой папки перекрывают то, что
+задано в Dockerfile. Если папку создал Docker от root — `www-data` (uid 33 в контейнере)
+писать не может. Починка на хосте из папки проекта:
+```bash
+mkdir -p data
+sudo chown -R 33:33 data   # 33 = uid www-data внутри контейнера
+docker compose up -d
+```
+`get_db()` теперь сам бросает понятную ошибку (каталог не существует / нет прав /
+файл не доступен на запись) вместо криптичного PDOException.
+
 ## 5. API
 
 ### `GET /api/nearby.php`

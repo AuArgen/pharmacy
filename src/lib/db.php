@@ -14,11 +14,31 @@ function get_db(): PDO
 
     $path = getenv('PHARMACY_DB_PATH') ?: __DIR__ . '/../../data/pharmacy.sqlite';
     $dir = dirname($path);
+
     if (!is_dir($dir)) {
         @mkdir($dir, 0775, true);
     }
 
-    $isNew = !file_exists($path);
+    // Понятная диагностика вместо криптичного «unable to open database file».
+    if (!is_dir($dir)) {
+        throw new RuntimeException(
+            "Каталог для базы данных не существует и не может быть создан: {$dir}. " .
+            "Создайте его и дайте права веб-серверу (www-data)."
+        );
+    }
+    if (!is_writable($dir)) {
+        $owner = function_exists('posix_getpwuid') ? (posix_getpwuid(posix_geteuid())['name'] ?? '?') : get_current_user();
+        throw new RuntimeException(
+            "Нет прав на запись в каталог БД: {$dir} (PHP работает от пользователя «{$owner}»). " .
+            "Выполните на сервере: sudo chown -R www-data:www-data {$dir} && sudo chmod -R 775 {$dir}"
+        );
+    }
+    if (file_exists($path) && !is_writable($path)) {
+        throw new RuntimeException(
+            "Нет прав на запись в файл БД: {$path}. " .
+            "Выполните: sudo chown www-data:www-data {$path} && sudo chmod 664 {$path}"
+        );
+    }
 
     $pdo = new PDO('sqlite:' . $path);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
