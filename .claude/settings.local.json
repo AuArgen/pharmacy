@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker run *)",
+      "PowerShell(docker compose up --build -d)",
+      "PowerShell(Start-Sleep -Seconds 3; docker compose ps; \"----- API TEST -----\"; try { $r = Invoke-WebRequest -Uri \"http://localhost:8080/api/nearby.php?lat=42.876&lng=74.612&limit=3\" -UseBasicParsing; $r.Content } catch { \"ERR: $_\" })",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:8080/\" -UseBasicParsing; \"index.php -> HTTP \" + $r.StatusCode } catch { \"ERR: $_\" }; try { $j = Invoke-WebRequest -Uri \"http://localhost:8080/assets/js/app.js\" -UseBasicParsing; \"app.js -> HTTP \" + $j.StatusCode } catch { \"ERR app.js: $_\" })",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:8080/\" -UseBasicParsing; \"HTTP \" + $r.StatusCode + \" | modal present: \" + \\($r.Content -match 'geo-modal'\\) } catch { \"ERR: $_\" }; $j = Invoke-WebRequest -Uri \"http://localhost:8080/assets/js/app.js\" -UseBasicParsing; \"app.js HTTP \" + $j.StatusCode + \" | openModal present: \" + \\($j.Content -match 'openModal'\\))",
+      "PowerShell(docker compose up -d)",
+      "PowerShell(docker compose ps)",
+      "PowerShell(docker compose exec app sh -c \"php -r '`$p=new PDO\\(\\\\\"sqlite:/var/www/data/pharmacy.sqlite\\\\\"\\); foreach\\(`$p->query\\(\\\\\"SELECT id,ip,region,city,district,nearest_distance_km,created_at FROM visits ORDER BY id DESC LIMIT 3\\\\\"\\) as `$r\\){echo json_encode\\(`$r,JSON_UNESCAPED_UNICODE\\).PHP_EOL;}'\")",
+      "PowerShell(docker compose exec app php /var/www/html/_check.php)",
+      "PowerShell(docker compose exec app php -r \"\\(new PDO\\('sqlite:/var/www/data/pharmacy.sqlite'\\)\\)->exec\\('DELETE FROM admin_blocks'\\); echo 'blocks cleared';\")",
+      "PowerShell(docker compose port app 80)",
+      "PowerShell(\"-- config check \\(���� �� .env\\) --\")"
+    ]
+  }
+}

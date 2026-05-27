@@ -1,0 +1,16 @@
+services:
+  app:
+    build: .
+    container_name: pharmacy_app
+    # Порт берётся из .env (PORT), по умолчанию 8080.
+    ports:
+      - "${PORT:-8080}:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./data:/var/www/data
+    # Значения подставляются из .env (см. .env.example).
+    environment:
+      - PHARMACY_DB_PATH=/var/www/data/pharmacy.sqlite
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
+      - DISABLE_GEOCODING=${DISABLE_GEOCODING:-0}
+    restart: unless-stopped

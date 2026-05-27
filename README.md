@@ -9,10 +9,14 @@ Docker · PHP 8.3 · SQLite · HTML · Tailwind CSS · Vanilla JS · Leaflet (Op
 ## Запуск
 
 ```bash
+cp .env.example .env      # порт и пароль админки (можно изменить)
 docker compose up --build
 ```
 
-Откройте **http://localhost:8080** и разрешите доступ к геолокации.
+Откройте **http://localhost:8080** (или ваш `PORT` из `.env`) и разрешите доступ к геолокации.
+
+Настройки в `.env`: `PORT` (порт сайта), `ADMIN_PASSWORD` (пароль `/admin.php`),
+`DISABLE_GEOCODING` (1 — offline-режим).
 
 База SQLite создаётся автоматически и наполняется демо-аптеками (г. Бишкек) при
 первом запуске. Файл хранится в `./data/pharmacy.sqlite`.

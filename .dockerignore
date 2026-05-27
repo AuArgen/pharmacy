@@ -1,0 +1,7 @@
+.git
+.env
+data/*.sqlite
+data/*.sqlite-wal
+data/*.sqlite-shm
+README.md
+CLAUDE.md

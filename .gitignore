@@ -1,0 +1,30 @@
+# --- Окружение и секреты ---
+.env
+*.local
+
+# --- База данных SQLite (создаётся автоматически) ---
+data/*.sqlite
+data/*.sqlite-wal
+data/*.sqlite-shm
+data/*.sqlite-journal
+
+# --- Зависимости ---
+/vendor/
+node_modules/
+
+# --- Логи и временное ---
+*.log
+src/_check.php
+tmp/
+*.tmp
+
+# --- ОС ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Редакторы / IDE ---
+.vscode/
+.idea/
+*.swp
+*~
